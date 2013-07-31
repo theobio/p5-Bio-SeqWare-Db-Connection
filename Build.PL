@@ -5,7 +5,7 @@ use Module::Build;
 
 my $builder = Module::Build->new(
     module_name         => 'Bio::SeqWare::Db::Connection',
-    license             => 'GPL_3',
+    license             => 'gpl',
     dist_author         => q{Stuart R. Jefferys <srjefferys (at) gmail (dot) com>},
     dist_version_from   => 'lib/Bio/SeqWare/Db/Connection.pm',
     release_status      => 'stable',
@@ -16,8 +16,10 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
     },
     requires => {
-        #'ABC'              => 1.6,
-        #'Foo::Bar::Module' => 5.0401,
+        'perl'                 => '0.008',
+        'Bio::SeqWare::Config' => '0.000.001',
+        'DBI'                  => 0,
+        'DBD::Pg'              => 0,
     },
     add_to_cleanup     => [ 'p5-Bio-SeqWare-Db-Connection-*' ],
     create_makefile_pl => 'traditional',

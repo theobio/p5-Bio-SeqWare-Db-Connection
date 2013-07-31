@@ -25,4 +25,4 @@ p5-Bio-SeqWare-Db-Connection-*.tar.gz
 
 # IDE: Eclipse
 .project
-
+.includepath

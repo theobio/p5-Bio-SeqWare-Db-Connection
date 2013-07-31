@@ -4,93 +4,126 @@ Bio::SeqWare::Db::Connection - Grab new SeqWare database connections easily.
 
 # VERSION
 
-Version 0.000001
+Version 0.000.001
 
 # SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use Bio::SeqWare::Db::Connection;
 
-    my $foo = Bio::SeqWare::Db::Connection->new();
-    ...
+    # Setting connection with parameters from the SeqWare config file
+    my $swConfigObj = Bio::SeqWare::Config->new();
+    my $swConnectionBuilder = Bio::SeqWare::Db::Connection->new( $swConfigObj );
+    my $dbh = $swConnectionBuilder->getConnection();
 
-# EXPORT
+    # Setting connection with manual parameters
+    my $paramHR = { 'dbUser'     => "USER",
+                    'dbPassword' => "PASSWORD",
+                    'dbHost      => "MY.HOST.NAME_OR_ADDRESS"
+                    'dbSchema    => "MY_DB_SCHEMA_NAME"
+    };
+    my $swConnectionBuilder = Bio::SeqWare::Db::Connection->new( $paramHR );
+    my $dbh = $swConnectionBuilder->getConnection();
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+# DESCRIPTION
 
-# SUBROUTINES/METHODS
+This module serves as an interface between DBI and the SeqWare system to allow
+connections to be obtainined easily given the settings in a SeqWare
+config file. This avoids some of the boilerplate code in scripts and localizes
+future changes. Most implortantly, it removes passwords from scripts.
 
-## function1
+Does not currently support any getter or setter
+methods for the connection information, any management of the handle after
+creation, or any database other than postgres.
 
-## function2
+# CLASS METHODS
+
+## new( ... )
+
+    my $swDbManager = new( $swConfigFileObject );
+    my $swDbManager = new( $paramHR );
+
+Creates and returns a `Bio::SeqWare::Db::Connection` object to generate database
+handles for accessing a postgres-hosted SeqWare database. After creating this
+manager object, can then call `$swDbManager->getConnection()` to create a normal
+DBI database connection handle.
+
+Regardless of whether the `Bio::SeqWare::Config` object or a `$paramHR`
+hash-ref is used to provide connection information, the four keys
+`qw( dbUser dbPassword dbHost dbSchema )` are required. If any are undefined,
+a fatal error occurs. The ability to actually create a connection
+is not validated, just that some attempt was made to provide the required info.
+
+# INSTANCE METHODS
+
+## getConnection
+
+    my $dbh = $dbManager->getConnection();
+
+Returns a normal DBI Connection handle that can be used to work with the
+database. This handle is configured to AutoCommit and to RaiseError.
+
+Future versions may allow providing parameters.
 
 # AUTHOR
 
 Stuart R. Jefferys, `srjefferys (at) gmail (dot) com`
 
-# BUGS
+# CONTRIBUTING
 
-Please report any bugs or feature requests to `bug-p5-bio-seqware-db-connection at rt.cpan.org`, or through
-the web interface at [http://rt.cpan.org/NoAuth/ReportBug.html?Queue=p5-Bio-SeqWare-Db-Connection](http://rt.cpan.org/NoAuth/ReportBug.html?Queue=p5-Bio-SeqWare-Db-Connection).  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+This module is developed and hosted on GitHub, at
+[p5-Bio-SeqWare-Db-Connection ](http://search.cpan.org/perldoc?https:#/github.com/theobio/p5-Bio-SeqWare-Db-Connection). It
+is not currently on CPAN, and I don't have any immediate plans to post it
+there unless requested by core SeqWare developers (It is not my place to
+set out a module name hierarchy for the project as a whole :)
 
+# INSTALLATION
 
+You can install a version of this module directly from github using
 
+    $ cpanm git://github.com/theobio/p5-Bio-SeqWare-Db-Connection.git@v0.000.001
 
+Any version can be specified by modifying the tag name, following the @;
+the above installs the latest _released_ version. If you leave off the @version
+part of the link, you can install the bleading edge pre-release, if you don't
+care about bugs...
 
+You can select and download any package for any released version of this module
+directly from [https://github.com/theobio/p5-Bio-SeqWare-Db-Connection/releases](https://github.com/theobio/p5-Bio-SeqWare-Db-Connection/releases).
+Installing is then a matter of unzipping it, changing into the unzipped
+directory, and then executing the normal (C>Module::Build>) incantation:
 
+     perl Build.PL
+     ./Build
+     ./Build test
+     ./Build install
 
-# SUPPORT
+# BUGS AND SUPPORT
 
-You can find documentation for this module with the perldoc command.
+No known bugs are present in this release. Unknown bugs are a virtual
+certainty. Please report bugs (and feature requests) though the
+Github issue tracker associated with the development repository, at:
 
-    perldoc Bio::SeqWare::Db::Connection
+[https://github.com/theobio/p5-Bio-SeqWare-Db-Connection/issues](https://github.com/theobio/p5-Bio-SeqWare-Db-Connection/issues)
 
-
-
-You can also look for information at:
-
-- RT: CPAN's request tracker (report bugs here)
-
-[http://rt.cpan.org/NoAuth/Bugs.html?Dist=p5-Bio-SeqWare-Db-Connection](http://rt.cpan.org/NoAuth/Bugs.html?Dist=p5-Bio-SeqWare-Db-Connection)
-
-- AnnoCPAN: Annotated CPAN documentation
-
-[http://annocpan.org/dist/p5-Bio-SeqWare-Db-Connection](http://annocpan.org/dist/p5-Bio-SeqWare-Db-Connection)
-
-- CPAN Ratings
-
-[http://cpanratings.perl.org/d/p5-Bio-SeqWare-Db-Connection](http://cpanratings.perl.org/d/p5-Bio-SeqWare-Db-Connection)
-
-- Search CPAN
-
-[http://search.cpan.org/dist/p5-Bio-SeqWare-Db-Connection/](http://search.cpan.org/dist/p5-Bio-SeqWare-Db-Connection/)
-
-
+Note: you must have a GitHub account to submit issues.
 
 # ACKNOWLEDGEMENTS
 
-
+This module was developed for use with [SegWare ](http://search.cpan.org/perldoc?http:#/seqware.github.io).
 
 # LICENSE AND COPYRIGHT
 
 Copyright 2013 Stuart R. Jefferys.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
-
-
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
