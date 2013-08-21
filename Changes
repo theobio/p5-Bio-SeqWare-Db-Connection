@@ -1,6 +1,7 @@
 Revision history for p5-Bio-SeqWare-Db-Connection
 
-0.000.002 PRE-RELEASE
+0.000.002 2013-08-21 17:45:00 EST
+    [FEATURE] - getConnection() can accept hash-ref param (DBI settings)
 
 0.000.001 2013-07-31 14:30:00 EST
     [MAJOR] - Initial version

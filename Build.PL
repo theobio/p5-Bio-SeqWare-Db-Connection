@@ -17,7 +17,7 @@ my $builder = Module::Build->new(
     },
     requires => {
         'perl'                 => '0.008',
-        'Bio::SeqWare::Config' => '0.000.001',
+        'Bio::SeqWare::Config' => '0.000001',
         'DBI'                  => 0,
         'DBD::Pg'              => 0,
     },

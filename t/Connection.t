@@ -11,8 +11,8 @@ use Test::More 'tests' => 1 + 3;   # Main testing module; run this many subtests
 # live testing.
 
 if ( ! $ENV{'RELEASE_TESTING'} ) {
-	    diag( 'Skipping 2 author-only tests' );
-    }
+	diag( 'Skipping 2 author-only tests' );
+}
 
 BEGIN {
 	use_ok( 'Bio::SeqWare::Db::Connection' );
@@ -116,17 +116,32 @@ sub testNewBAD {
 
 sub testGetConnection {
     if ( $ENV{'RELEASE_TESTING'} ) {
-	    plan( tests => 2 );
+	    plan( tests => 6 );
     }
     else {
         plan( skip_all => 'Author test only, run if RELEASE_TESTING set' );
     }
 
-	{
-        my $dbh = $DB_FROM_CONFIG->getConnection();
+    my $dbh = $DB_FROM_CONFIG->getConnection();
+    {
         ok( $dbh, "Connection from config-based db object");
-        $dbh->disconnect();
-	}
+    }
+    {
+        ok( $dbh->{'AutoCommit'}, "Default AutoComit on.");
+    }
+    {
+        ok( $dbh->{'RaiseError'}, "Default RaiseError on.");
+    }
+    $dbh->disconnect();
+
+    $dbh = $DB_FROM_CONFIG->getConnection( {'RaiseError' => 0, 'AutoCommit' => 0} );
+    {
+        ok( ! $dbh->{'AutoCommit'}, "Parameter sets AutoComit off.");
+    }
+    {
+        ok( ! $dbh->{'RaiseError'}, "Parameter sets RaiseError off.");
+    }
+    $dbh->disconnect();
 	{
         my $dbh = $DB_FROM_INFO->getConnection();
         ok( $dbh, "Connection from hash-ref-based db object");

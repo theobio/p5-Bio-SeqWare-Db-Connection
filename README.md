@@ -4,7 +4,7 @@ Bio::SeqWare::Db::Connection - Grab new SeqWare database connections easily.
 
 # VERSION
 
-Version 0.000.001
+Version 0.000.002
 
 # SYNOPSIS
 
@@ -58,11 +58,12 @@ is not validated, just that some attempt was made to provide the required info.
 ## getConnection
 
     my $dbh = $dbManager->getConnection();
+    my $dbh = $dbManager->getConnection( { RaiseError => 1,
+                                           AutoCommit => 1, } );
 
 Returns a normal DBI Connection handle that can be used to work with the
-database. This handle is configured to AutoCommit and to RaiseError.
-
-Future versions may allow providing parameters.
+database. DBI options can be passed as a parameter, by default to provided
+handle is configured to AutoCommit and to RaiseError.
 
 # AUTHOR
 
@@ -80,7 +81,9 @@ set out a module name hierarchy for the project as a whole :)
 
 You can install a version of this module directly from github using
 
-    $ cpanm git://github.com/theobio/p5-Bio-SeqWare-Db-Connection.git@v0.000.001
+      $ cpanm git://github.com/theobio/p5-Bio-SeqWare-Db-Connection.git@v0.000.002
+    or
+      $ cpanm https://github.com/theobio/p5-Bio-SeqWare-Db-Connection/archive/v0.000.002.tar.gz
 
 Any version can be specified by modifying the tag name, following the @;
 the above installs the latest _released_ version. If you leave off the @version

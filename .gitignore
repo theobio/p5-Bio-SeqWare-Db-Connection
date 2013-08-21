@@ -17,8 +17,7 @@ pod2htm*.tmp
 pm_to_blib
 
 # Perl: this repo
-p5-Bio-SeqWare-Db-Connection-*
-p5-Bio-SeqWare-Db-Connection-*.tar.gz
+Bio-SeqWare-Db-Connection-*
 
 # OS: Mac OS X
 .DS_Store

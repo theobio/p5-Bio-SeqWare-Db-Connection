@@ -66,7 +66,6 @@
 \bBuild.COM$
 \bBUILD.COM$
 \bbuild.com$
-^MANIFEST\.SKIP
 
 # Avoid archives of this distribution
 \bBio-SeqWare-Config-[\d\.\_]+

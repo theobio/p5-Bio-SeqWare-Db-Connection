@@ -15,11 +15,11 @@ Bio::SeqWare::Db::Connection - Grab new SeqWare database connections easily.
 
 =head1 VERSION
 
-Version 0.000.002   # PRE-RELEASE
+Version 0.000.002
 
 =cut
 
-our $VERSION = '0.000002';   # PRE-RELEASE
+our $VERSION = '0.000002';
 
 =head1 SYNOPSIS
 
@@ -121,31 +121,38 @@ sub new {
 =head2 getConnection
 
     my $dbh = $dbManager->getConnection();
+    my $dbh = $dbManager->getConnection( { RaiseError => 1,
+                                           AutoCommit => 1, } );
 
 Returns a normal DBI Connection handle that can be used to work with the
-database. This handle is configured to AutoCommit and to RaiseError.
-
-Future versions may allow providing parameters.
+database. DBI options can be passed as a parameter, by default to provided
+handle is configured to AutoCommit and to RaiseError.
 
 =cut
 
 sub getConnection {
     my $self = shift;
+    my $dbiParamsHR = shift;
+    if (! defined $dbiParamsHR) {
+        $dbiParamsHR = {'RaiseError' => 1, 'AutoCommit' => 1};
+    }
+    if (! ref $dbiParamsHR || ref $dbiParamsHR ne 'HASH') {
+        croak ("Parameter must be a hash ref giving DBI settings.");
+    }
 
     my $dbn = "DBI:Pg:dbname=$self->{'_dbSchema'};host=$self->{'_dbHost'}";
     my $dbh=DBI->connect(
         $dbn,
         $self->{'_dbUser'},
         $self->{'_dbPassword'},
-        {RaiseError => 1, AutoCommit => 1}
+        $dbiParamsHR,
     );
 
-    # Guard code: this should not run as above should be fatal on bad connections
     if (! $dbh) {
         croak "Could not connect to the database: $!";
     }
 
-     return $dbh
+    return $dbh;
 }
 
 =head1 AUTHOR
@@ -169,7 +176,9 @@ set out a module name hierarchy for the project as a whole :)
 
 You can install a version of this module directly from github using
 
-    $ cpanm git://github.com/theobio/p5-Bio-SeqWare-Db-Connection.git@v0.000.002
+   $ cpanm git://github.com/theobio/p5-Bio-SeqWare-Db-Connection.git@v0.000.002
+ or
+   $ cpanm https://github.com/theobio/p5-Bio-SeqWare-Db-Connection/archive/v0.000.002.tar.gz
 
 Any version can be specified by modifying the tag name, following the @;
 the above installs the latest I<released> version. If you leave off the @version
