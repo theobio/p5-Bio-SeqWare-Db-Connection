@@ -1,6 +1,6 @@
 Revision history for p5-Bio-SeqWare-Db-Connection
 
-0.000.003 2013-08-21 21:15:00 EST
+0.000.003 2013-08-21 22:00:00 EST
     [FEATURE] - new() can use any object with correct accessible internal
                 properties, like a Bio::SeqWare::Upload::CgHub::Fastq object.
 
@@ -9,4 +9,3 @@ Revision history for p5-Bio-SeqWare-Db-Connection
 
 0.000.001 2013-07-31 14:30:00 EST
     [MAJOR] - Initial version
-

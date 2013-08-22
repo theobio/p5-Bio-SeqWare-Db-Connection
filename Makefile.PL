@@ -3,16 +3,16 @@ require 0.008;
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-  'PREREQ_PM' => {
-                   'DBI' => 0,
-                   'Test::More' => 0,
-                   'Bio::SeqWare::Config' => '0.000001',
-                   'DBD::Pg' => 0
-                 },
-  'NAME' => 'Bio::SeqWare::Db::Connection',
-  'PL_FILES' => {},
-  'VERSION_FROM' => 'lib/Bio/SeqWare/Db/Connection.pm',
   'EXE_FILES' => [],
-  'INSTALLDIRS' => 'site'
+  'NAME' => 'Bio::SeqWare::Db::Connection',
+  'VERSION_FROM' => 'lib/Bio/SeqWare/Db/Connection.pm',
+  'INSTALLDIRS' => 'site',
+  'PL_FILES' => {},
+  'PREREQ_PM' => {
+                   'DBD::Pg' => 0,
+                   'Bio::SeqWare::Config' => '0.000001',
+                   'DBI' => 0,
+                   'Test::More' => 0
+                 }
 )
 ;
