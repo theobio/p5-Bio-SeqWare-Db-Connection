@@ -23,17 +23,26 @@ my $CLASS = 'Bio::SeqWare::Db::Connection';
 my $CONFIG_FILE_OBJ = Bio::SeqWare::Config->new();
 
 my $CONNECT_INFO_HR = {
-    'dbUser'      => $CONFIG_FILE_OBJ->get('dbUser'),
+    'dbUser'      => $CONFIG_FILE_OBJ->get('dbUser'    ),
     'dbPassword'  => $CONFIG_FILE_OBJ->get('dbPassword'),
-    'dbSchema'    => $CONFIG_FILE_OBJ->get('dbSchema'),
-    'dbHost'      => $CONFIG_FILE_OBJ->get('dbHost'),
+    'dbSchema'    => $CONFIG_FILE_OBJ->get('dbSchema'  ),
+    'dbHost'      => $CONFIG_FILE_OBJ->get('dbHost'    ),
 };
+
+my $SOME_OBJ = bless({
+    '_dbUser'     => $CONFIG_FILE_OBJ->get('dbUser'    ),
+    '_dbPassword' => $CONFIG_FILE_OBJ->get('dbPassword'),
+    '_dbSchema'   => $CONFIG_FILE_OBJ->get('dbSchema'  ),
+    '_dbHost'     => $CONFIG_FILE_OBJ->get('dbHost'    ),
+}, "Some::Object" );
 
 my $DB_FROM_CONFIG;
 my $DB_FROM_INFO;
+my $DB_FROM_SOME_OBJ;
 if ( $ENV{'RELEASE_TESTING'} ) {
-    $DB_FROM_CONFIG = $CLASS->new( $CONFIG_FILE_OBJ );
-    $DB_FROM_INFO   = $CLASS->new( $CONNECT_INFO_HR );
+    $DB_FROM_CONFIG   = $CLASS->new( $CONFIG_FILE_OBJ );
+    $DB_FROM_INFO     = $CLASS->new( $CONNECT_INFO_HR );
+    $DB_FROM_SOME_OBJ = $CLASS->new( $SOME_OBJ        );
 }
 
 subtest( 'new()' => \&testNew );
@@ -42,7 +51,7 @@ subtest( 'getGetConnection()' => \&testGetConnection );
 
 sub testNew {
     if ( $ENV{'RELEASE_TESTING'} ) {
-	    plan( tests => 2 );
+	    plan( tests => 3 );
     }
     else {
         plan( skip_all => 'Author test only, run if RELEASE_TESTING set' );
@@ -53,6 +62,9 @@ sub testNew {
 	}
 	{
 	    ok($DB_FROM_INFO, "New from info hash-ref");
+	}
+	{
+	    ok($DB_FROM_SOME_OBJ, "New from some object");
 	}
 }
 

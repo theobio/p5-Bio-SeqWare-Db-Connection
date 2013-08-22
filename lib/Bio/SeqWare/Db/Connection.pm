@@ -62,6 +62,7 @@ creation, or any database other than postgres.
 
     my $swDbManager = new( $swConfigFileObject );
     my $swDbManager = new( $paramHR );
+    my $swDbManager = new( $someObject );
 
 Creates and returns a C<Bio::SeqWare::Db::Connection> object to generate database
 handles for accessing a postgres-hosted SeqWare database. After creating this
@@ -69,28 +70,37 @@ manager object, can then call C<< $swDbManager->getConnection() >> to create a n
 DBI database connection handle.
 
 Regardless of whether the C<Bio::SeqWare::Config> object or a C<$paramHR>
-hash-ref is used to provide connection information, the four keys
-C<qw( dbUser dbPassword dbHost dbSchema )> are required. If any are undefined,
-a fatal error occurs. The ability to actually create a connection
+hash-ref or some other object is used to provide connection information, the
+four keys C<qw( dbUser dbPassword dbHost dbSchema )> are required. If any are
+undefined, a fatal error occurs. (for objects other than the connection
+object, an attempt is made to read the internal _dbUser, etc values directly
+from the self->{_key} hash). The ability to actually create a connection
 is not validated, just that some attempt was made to provide the required info.
 
 =cut
 
 sub new {
     my $class = shift;
-    my $connectInfo = shift;
+    my $info = shift;
     my $self = {};
-    if (ref $connectInfo eq "Bio::SeqWare::Config") {
-        $self->{'_dbUser'}     = $connectInfo->get('dbUser');
-        $self->{'_dbPassword'} = $connectInfo->get('dbPassword');
-        $self->{'_dbSchema'}     = $connectInfo->get('dbSchema');
-        $self->{'_dbHost'}     = $connectInfo->get('dbHost');
+    if (ref $info eq "Bio::SeqWare::Config") {
+        $self->{'_dbUser'}     = $info->get('dbUser');
+        $self->{'_dbPassword'} = $info->get('dbPassword');
+        $self->{'_dbSchema'}   = $info->get('dbSchema');
+        $self->{'_dbHost'}     = $info->get('dbHost');
     }
-    elsif (ref $connectInfo eq "HASH") {
-        $self->{'_dbUser'}     = $connectInfo->{'dbUser'};
-        $self->{'_dbPassword'} = $connectInfo->{'dbPassword'};
-        $self->{'_dbSchema'}   = $connectInfo->{'dbSchema'};
-        $self->{'_dbHost'}     = $connectInfo->{'dbHost'};
+    elsif (ref $info eq "HASH") {
+        $self->{'_dbUser'}     = $info->{'dbUser'};
+        $self->{'_dbPassword'} = $info->{'dbPassword'};
+        $self->{'_dbSchema'}   = $info->{'dbSchema'};
+        $self->{'_dbHost'}     = $info->{'dbHost'};
+    }
+    elsif (ref $info && exists $info->{'_dbUser'} && exists $info->{'_dbPassword'}
+                     && exists $info->{'_dbHost'} && exists $info->{'_dbSchema'  } ) {
+        $self->{'_dbUser'}     = $info->{'_dbUser'};
+        $self->{'_dbPassword'} = $info->{'_dbPassword'};
+        $self->{'_dbSchema'}   = $info->{'_dbSchema'};
+        $self->{'_dbHost'}     = $info->{'_dbHost'};
     }
     else {
         croak( "Error: Hash-ref or Bio::SeqWare::Config object parameter required." );

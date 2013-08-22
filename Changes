@@ -1,5 +1,9 @@
 Revision history for p5-Bio-SeqWare-Db-Connection
 
+0.000.003 2013-08-21 21:15:00 EST
+    [FEATURE] - new() can use any object with correct accessible internal
+                properties, like a Bio::SeqWare::Upload::CgHub::Fastq object.
+
 0.000.002 2013-08-21 17:45:00 EST
     [FEATURE] - getConnection() can accept hash-ref param (DBI settings)
 

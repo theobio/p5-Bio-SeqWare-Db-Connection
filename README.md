@@ -41,6 +41,7 @@ creation, or any database other than postgres.
 
     my $swDbManager = new( $swConfigFileObject );
     my $swDbManager = new( $paramHR );
+    my $swDbManager = new( $someObject );
 
 Creates and returns a `Bio::SeqWare::Db::Connection` object to generate database
 handles for accessing a postgres-hosted SeqWare database. After creating this
@@ -48,9 +49,11 @@ manager object, can then call `$swDbManager->getConnection()` to create a normal
 DBI database connection handle.
 
 Regardless of whether the `Bio::SeqWare::Config` object or a `$paramHR`
-hash-ref is used to provide connection information, the four keys
-`qw( dbUser dbPassword dbHost dbSchema )` are required. If any are undefined,
-a fatal error occurs. The ability to actually create a connection
+hash-ref or some other object is used to provide connection information, the
+four keys `qw( dbUser dbPassword dbHost dbSchema )` are required. If any are
+undefined, a fatal error occurs. (for objects other than the connection
+object, an attempt is made to read the internal \_dbUser, etc values directly
+from the self->{\_key} hash). The ability to actually create a connection
 is not validated, just that some attempt was made to provide the required info.
 
 # INSTANCE METHODS

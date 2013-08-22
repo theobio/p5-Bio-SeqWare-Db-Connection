@@ -68,7 +68,7 @@
 \bbuild.com$
 
 # Avoid archives of this distribution
-\bBio-SeqWare-Config-[\d\.\_]+
+\bBio-SeqWare-Db-Connection-[\d\.\_]+
 
 # Eclipse files
 .project
