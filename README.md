@@ -4,7 +4,7 @@ Bio::SeqWare::Db::Connection - Grab new SeqWare database connections easily.
 
 # VERSION
 
-Version 0.000.002
+Version 0.000.004
 
 # SYNOPSIS
 
@@ -41,7 +41,7 @@ creation, or any database other than postgres.
 
     my $swDbManager = new( $swConfigFileObject );
     my $swDbManager = new( $paramHR );
-    my $swDbManager = new( $someObject );
+    my $swDbManager = new( $someCompatibleObject );
 
 Creates and returns a `Bio::SeqWare::Db::Connection` object to generate database
 handles for accessing a postgres-hosted SeqWare database. After creating this
@@ -49,12 +49,15 @@ manager object, can then call `$swDbManager->getConnection()` to create a normal
 DBI database connection handle.
 
 Regardless of whether the `Bio::SeqWare::Config` object or a `$paramHR`
-hash-ref or some other object is used to provide connection information, the
+hash-ref or some compatible object is used to provide connection information, the
 four keys `qw( dbUser dbPassword dbHost dbSchema )` are required. If any are
-undefined, a fatal error occurs. (for objects other than the connection
-object, an attempt is made to read the internal \_dbUser, etc values directly
-from the self->{\_key} hash). The ability to actually create a connection
-is not validated, just that some attempt was made to provide the required info.
+undefined, a fatal error occurs. A compatible objects is any hash based object
+with these four readable properties (keys). An attempt will be made to read
+the dbUser, etc, values directly as $self->{'dbUser'} etc from a compatible
+object if provided.
+
+The ability to actually create a connection is not validated, just that some
+attempt was made to provide the required info.
 
 # INSTANCE METHODS
 
@@ -84,9 +87,9 @@ set out a module name hierarchy for the project as a whole :)
 
 You can install a version of this module directly from github using
 
-      $ cpanm git://github.com/theobio/p5-Bio-SeqWare-Db-Connection.git@v0.000.002
+      $ cpanm git://github.com/theobio/p5-Bio-SeqWare-Db-Connection.git@v0.000.004
     or
-      $ cpanm https://github.com/theobio/p5-Bio-SeqWare-Db-Connection/archive/v0.000.002.tar.gz
+      $ cpanm https://github.com/theobio/p5-Bio-SeqWare-Db-Connection/archive/v0.000.004.tar.gz
 
 Any version can be specified by modifying the tag name, following the @;
 the above installs the latest _released_ version. If you leave off the @version

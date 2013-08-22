@@ -29,12 +29,7 @@ my $CONNECT_INFO_HR = {
     'dbHost'      => $CONFIG_FILE_OBJ->get('dbHost'    ),
 };
 
-my $SOME_OBJ = bless({
-    '_dbUser'     => $CONFIG_FILE_OBJ->get('dbUser'    ),
-    '_dbPassword' => $CONFIG_FILE_OBJ->get('dbPassword'),
-    '_dbSchema'   => $CONFIG_FILE_OBJ->get('dbSchema'  ),
-    '_dbHost'     => $CONFIG_FILE_OBJ->get('dbHost'    ),
-}, "Some::Object" );
+my $SOME_OBJ = bless( $CONNECT_INFO_HR, "Some::Object" );
 
 my $DB_FROM_CONFIG;
 my $DB_FROM_INFO;
@@ -70,7 +65,7 @@ sub testNew {
 }
 
 sub testNewBAD {
-	plan( tests => 5 );
+	plan( tests => 9 );
     {
         my $badConnectInfo = {
             'dbUser'      => "",
@@ -82,6 +77,17 @@ sub testNewBAD {
         $got = $@;
         $want = qr/^Error\: \"dbUser\" not defined/;
         like( $got, $want, "error on missing dbUser");
+    }
+    {
+        my $badConnectInfo = {
+            'dbPassword'  => "TEST",
+            'dbSchema'    => "TEST",
+            'dbHost'      => "TEST",
+        };
+        eval{ $CLASS->new( $badConnectInfo ); };
+        $got = $@;
+        $want = qr/^Error\: missing \"dbUser\" param/;
+        like( $got, $want, "error on non-existent dbUser");
     }
     {
         my $badConnectInfo = {
@@ -97,6 +103,17 @@ sub testNewBAD {
     }
     {
         my $badConnectInfo = {
+            'dbUser'   => "TEST",
+            'dbSchema' => "TEST",
+            'dbHost'   => "TEST",
+        };
+        eval{ $CLASS->new( $badConnectInfo ); };
+        $got = $@;
+        $want = qr/^Error\: missing \"dbPassword\" param/;
+        like( $got, $want, "error on non-existent dbPassword");
+    }
+    {
+        my $badConnectInfo = {
             'dbUser'      => "TEST",
             'dbPassword'  => "TEST",
             'dbSchema'    => 0,
@@ -109,6 +126,17 @@ sub testNewBAD {
     }
     {
         my $badConnectInfo = {
+            'dbUser'     => "TEST",
+            'dbPassword' => "TEST",
+            'dbHost'     => "TEST",
+        };
+        eval{ $CLASS->new( $badConnectInfo ); };
+        $got = $@;
+        $want = qr/^Error\: missing \"dbSchema\" param/;
+        like( $got, $want, "error on non-existent dbSchema");
+    }
+    {
+        my $badConnectInfo = {
             'dbUser'      => "TEST",
             'dbPassword'  => "TEST",
             'dbSchema'    => "TEST",
@@ -118,6 +146,17 @@ sub testNewBAD {
         $got = $@;
         $want = qr/^Error\: \"dbHost\" not defined/;
         like( $got, $want, "error on missing dbHost");
+    }
+    {
+        my $badConnectInfo = {
+            'dbUser'     => "TEST",
+            'dbPassword' => "TEST",
+            'dbSchema'   => "TEST",
+        };
+        eval{ $CLASS->new( $badConnectInfo ); };
+        $got = $@;
+        $want = qr/^Error\: missing \"dbHost\" param/;
+        like( $got, $want, "error on non-existent dbHost");
     }
     {
         eval{ $CLASS->new(); };

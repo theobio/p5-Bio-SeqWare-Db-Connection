@@ -5,14 +5,14 @@ WriteMakefile
 (
   'EXE_FILES' => [],
   'NAME' => 'Bio::SeqWare::Db::Connection',
-  'VERSION_FROM' => 'lib/Bio/SeqWare/Db/Connection.pm',
-  'INSTALLDIRS' => 'site',
   'PL_FILES' => {},
   'PREREQ_PM' => {
-                   'DBD::Pg' => 0,
-                   'Bio::SeqWare::Config' => '0.000001',
+                   'Test::More' => 0,
                    'DBI' => 0,
-                   'Test::More' => 0
-                 }
+                   'DBD::Pg' => 0,
+                   'Bio::SeqWare::Config' => '0.000001'
+                 },
+  'VERSION_FROM' => 'lib/Bio/SeqWare/Db/Connection.pm',
+  'INSTALLDIRS' => 'site'
 )
 ;

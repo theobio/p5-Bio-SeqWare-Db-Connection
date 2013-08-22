@@ -15,11 +15,11 @@ Bio::SeqWare::Db::Connection - Grab new SeqWare database connections easily.
 
 =head1 VERSION
 
-Version 0.000.003
+Version 0.000.004
 
 =cut
 
-our $VERSION = '0.000003';
+our $VERSION = '0.000004';
 
 =head1 SYNOPSIS
 
@@ -62,7 +62,7 @@ creation, or any database other than postgres.
 
     my $swDbManager = new( $swConfigFileObject );
     my $swDbManager = new( $paramHR );
-    my $swDbManager = new( $someObject );
+    my $swDbManager = new( $someCompatibleObject );
 
 Creates and returns a C<Bio::SeqWare::Db::Connection> object to generate database
 handles for accessing a postgres-hosted SeqWare database. After creating this
@@ -70,12 +70,15 @@ manager object, can then call C<< $swDbManager->getConnection() >> to create a n
 DBI database connection handle.
 
 Regardless of whether the C<Bio::SeqWare::Config> object or a C<$paramHR>
-hash-ref or some other object is used to provide connection information, the
+hash-ref or some compatible object is used to provide connection information, the
 four keys C<qw( dbUser dbPassword dbHost dbSchema )> are required. If any are
-undefined, a fatal error occurs. (for objects other than the connection
-object, an attempt is made to read the internal _dbUser, etc values directly
-from the self->{_key} hash). The ability to actually create a connection
-is not validated, just that some attempt was made to provide the required info.
+undefined, a fatal error occurs. A compatible objects is any hash based object
+with these four readable properties (keys). An attempt will be made to read
+the dbUser, etc, values directly as $self->{'dbUser'} etc from a compatible
+object if provided.
+
+The ability to actually create a connection is not validated, just that some
+attempt was made to provide the required info.
 
 =cut
 
@@ -89,18 +92,23 @@ sub new {
         $self->{'_dbSchema'}   = $info->get('dbSchema');
         $self->{'_dbHost'}     = $info->get('dbHost');
     }
-    elsif (ref $info eq "HASH") {
+    elsif (ref $info) {
+        if (! exists $info->{'dbUser'} ) {
+            croak( "Error: missing \"dbUser\" param" );
+        }
+        if (! exists $info->{'dbPassword'} ) {
+            croak( "Error: missing \"dbPassword\" param" );
+        }
+        if (! exists $info->{'dbHost'} ) {
+            croak( "Error: missing \"dbHost\" param" );
+        }
+        if (! exists $info->{'dbSchema'  } ) {
+            croak( "Error: missing \"dbSchema\" param" );
+        }
         $self->{'_dbUser'}     = $info->{'dbUser'};
         $self->{'_dbPassword'} = $info->{'dbPassword'};
         $self->{'_dbSchema'}   = $info->{'dbSchema'};
         $self->{'_dbHost'}     = $info->{'dbHost'};
-    }
-    elsif (ref $info && exists $info->{'_dbUser'} && exists $info->{'_dbPassword'}
-                     && exists $info->{'_dbHost'} && exists $info->{'_dbSchema'  } ) {
-        $self->{'_dbUser'}     = $info->{'_dbUser'};
-        $self->{'_dbPassword'} = $info->{'_dbPassword'};
-        $self->{'_dbSchema'}   = $info->{'_dbSchema'};
-        $self->{'_dbHost'}     = $info->{'_dbHost'};
     }
     else {
         croak( "Error: Hash-ref or Bio::SeqWare::Config object parameter required." );
@@ -188,9 +196,9 @@ set out a module name hierarchy for the project as a whole :)
 
 You can install a version of this module directly from github using
 
-   $ cpanm git://github.com/theobio/p5-Bio-SeqWare-Db-Connection.git@v0.000.003
+   $ cpanm git://github.com/theobio/p5-Bio-SeqWare-Db-Connection.git@v0.000.004
  or
-   $ cpanm https://github.com/theobio/p5-Bio-SeqWare-Db-Connection/archive/v0.000.003.tar.gz
+   $ cpanm https://github.com/theobio/p5-Bio-SeqWare-Db-Connection/archive/v0.000.004.tar.gz
 
 Any version can be specified by modifying the tag name, following the @;
 the above installs the latest I<released> version. If you leave off the @version

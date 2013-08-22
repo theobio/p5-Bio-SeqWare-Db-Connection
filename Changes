@@ -1,5 +1,9 @@
 Revision history for p5-Bio-SeqWare-Db-Connection
 
+0.000.004 2013-08-21 22:45:00 EST
+    [BUG] - accessible internal properties don't start with underscores.
+    [DEV] - 100% test coverage if run against live db (RELEASE_TESTING=1)
+
 0.000.003 2013-08-21 22:00:00 EST
     [FEATURE] - new() can use any object with correct accessible internal
                 properties, like a Bio::SeqWare::Upload::CgHub::Fastq object.
