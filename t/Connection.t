@@ -3,7 +3,7 @@
 use Carp;                 # Caller-relative error messages
 use Bio::SeqWare::Config; # SeqWare settings
 
-use Test::More 'tests' => 1 + 3;   # Main testing module; run this many subtests
+use Test::More 'tests' => 1 + 4;   # Main testing module; run this many subtests
                                    # in BEGIN + subtests (subroutines).
 
 # Note: Author tests require a valid ~/seqware/settings file and the ability
@@ -48,6 +48,7 @@ if ( $ENV{'RELEASE_TESTING'} ) {
 subtest( 'new()' => \&testNew );
 subtest( 'new(BAD)' => \&testNewBAD );
 subtest( 'getGetConnection()' => \&testGetConnection );
+subtest( 'BADgetGetConnection()' => \&testBADGetConnection );
 
 sub testNew {
     if ( $ENV{'RELEASE_TESTING'} ) {
@@ -158,5 +159,40 @@ sub testGetConnection {
         my $dbh = $DB_FROM_INFO->getConnection();
         ok( $dbh, "Connection from hash-ref-based db object");
         $dbh->disconnect();
+	}
+}
+
+sub testBADGetConnection {
+    plan( tests => 4 );
+	my $badObj = $CLASS->new({
+	    'dbUser' => 'bad', 'dbPassword' => 'bad',
+	    'dbHost' => 'bad', 'dbSchema'   => 'bad',
+	});
+
+	{
+	    eval{
+	        $badObj->getConnection( "Scalar is bad" );
+	    };
+	    like( $@, qr/^Parameter must be a hash ref giving DBI settings./, "Bad param - scalar" );
+	}
+	{
+	    eval{
+	        $badObj->getConnection( $badObj );
+	    };
+	    like( $@, qr/^Parameter must be a hash ref giving DBI settings./, "Bad param - non-hash reference" );
+	}
+	{
+	    eval{
+	        $badObj->getConnection();
+	    };
+	    like( $@, qr/^Could not connect to the database/, "Failed to connect error" );
+	}
+	{
+	    my $obj = $CLASS->new( {'dbUser' => 'bad',         'dbPassword' => 'bad',
+	                            'dbHost' => 'bad', 'dbSchema'   => 'bad' } );
+	    eval{
+	        $badObj->getConnection({'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 0});
+	    };
+	    like( $@, qr/^Could not connect to the database/, "No connection error" );
 	}
 }

@@ -151,15 +151,17 @@ sub getConnection {
     }
 
     my $dbn = "DBI:Pg:dbname=$self->{'_dbSchema'};host=$self->{'_dbHost'}";
-    my $dbh=DBI->connect(
-        $dbn,
-        $self->{'_dbUser'},
-        $self->{'_dbPassword'},
-        $dbiParamsHR,
-    );
-
-    if (! $dbh) {
-        croak "Could not connect to the database: $!";
+    my $dbh;
+    eval {
+        $dbh=DBI->connect(
+            $dbn,
+            $self->{'_dbUser'},
+            $self->{'_dbPassword'},
+            $dbiParamsHR,
+        );
+    };
+    if ($@ || ! $dbh) {
+        croak "Could not connect to the database: $@";
     }
 
     return $dbh;
